@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from backend import models, database
 from backend.routes import auth_routes
+from backend.routes import expense_routes
 
 models.Base.metadata.create_all(bind = database.engine)
 
@@ -11,6 +12,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_routes.router)
+app.include_router(expense_routes.router)
 
 @app.get("/")
 def root():
