@@ -1,7 +1,8 @@
 # Handles user-related endpoints
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from backend import models, schemas, database, auth
+from backend import models, schemas, database
+from backend.utils import auth
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
