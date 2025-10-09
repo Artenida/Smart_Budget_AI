@@ -10,7 +10,8 @@ class ExpenseBase(BaseModel):
 
 # Fields needed when creating
 class ExpenseCreate(ExpenseBase):
-    pass
+    description: str
+    amount: float
 
 # What we return to frontend
 class ExpenseResponse(ExpenseBase):

@@ -7,8 +7,7 @@ from backend import models
 from backend.models import Expense
 from backend.schemas import ExpenseCreate, ExpenseResponse
 from backend.utils import auth
-from backend.utils import auth
-
+from backend import ai_model
 
 router = APIRouter(
     prefix="/expenses",
@@ -18,10 +17,14 @@ router = APIRouter(
 # Create an expense
 @router.post("/create", response_model=ExpenseResponse)
 def create_expense(expense: ExpenseCreate, db: Session = Depends(auth.get_db), current_user: models.User = Depends(auth.get_current_user)):
+    
+    category = ai_model.predict_category(expense.description)
+    
     new_expense = Expense(
         description = expense.description,
         amount = expense.amount,
-        category = expense.category if expense.category else "General",
+        #category = expense.category if expense.category else "General",
+        category = category,
         user_id = current_user.id
     )
     db.add(new_expense)
@@ -64,9 +67,12 @@ def update_expense(expense_id: int, updated_expense: ExpenseCreate, db: Session 
     if not expense:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found!")
     
+    if updated_expense.description != expense.description:
+        expense.category = ai_model.predict_category(updated_expense.description)
+
     expense.description = updated_expense.description
     expense.amount = updated_expense.amount
-    expense.category = updated_expense.category if updated_expense.category else expense.category
+    #expense.category = updated_expense.category if updated_expense.category else expense.category
     db.commit()
     db.refresh(expense)
     return expense
