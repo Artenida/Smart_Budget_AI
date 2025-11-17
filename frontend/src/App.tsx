@@ -1,7 +1,12 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import LoginPage from "./pages/LoginPage"
+
 export default function App() {
   return (
-    <div className="text-black">
-      Hello Tailwind!
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LoginPage/>} />
+      </Routes>
+    </BrowserRouter>
   )
 }
