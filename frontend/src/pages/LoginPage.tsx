@@ -1,16 +1,33 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { login } from "../api/auth"
 
 export default function LoginPage() {
-    const [username, setUsername] = useState("")
-    const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
-    
-    return (
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  async function handleLogin(e: any) {
+    e.preventDefault();
+    setError("");
+    try {
+      const access_token = await login(username, password);
+      localStorage.setItem("access_token", access_token);
+      navigate("/home");
+    } catch {
+      setError("Invalid Credentials");
+    }
+  }
+
+  return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm">
-        <h1 className="text-2xl font-bold mb-4 text-center"> Smart Budget Login</h1>
-        <form className="flex flex-col gap-4">
+        <h1 className="text-2xl font-bold mb-4 text-center">
+          {" "}
+          Smart Budget Login
+        </h1>
+        <form className="flex flex-col gap-4" onSubmit={handleLogin}>
           <input
             className="border p-2 rounded"
             placeholder="Username"
