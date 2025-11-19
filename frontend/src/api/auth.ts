@@ -14,7 +14,7 @@ export async function login(username: string, password: string): Promise<string>
 }
 
 export async function signup(username: string, password: string): Promise<void> {
-    await axios.post("http://localhost:8000/auth/signup", {
+    await axios.post("http://localhost:8000/auth/register", {
         username,
         password,
     });
