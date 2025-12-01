@@ -8,7 +8,7 @@ interface PublicRouteProps {
 
 export default function PublicRoute({ children }: PublicRouteProps) {
   if (isLoggedIn()) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/expenses" replace />;
   }
 
   return children;

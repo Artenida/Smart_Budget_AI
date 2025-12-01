@@ -14,7 +14,7 @@ export default function LoginPage() {
     try {
       const access_token = await login(username, password);
       localStorage.setItem("access_token", access_token);
-      navigate("/home");
+      navigate("/expenses");
     } catch {
       setError("Invalid Credentials");
     }

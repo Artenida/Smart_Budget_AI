@@ -13,11 +13,12 @@ export default function SignupPage() {
     setError("");
     try {
       await signup(username, password)
-      navigate('/') 
+      navigate('/login') 
     } catch {
       setError("Signup failed!")
     }
   }
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <div className="bg-white p-6 rounded-2xl shadow-lg w-full max-w-sm">
@@ -44,7 +45,7 @@ export default function SignupPage() {
         </form>
         <p className="text-sm mt-4 text-center">
           Already have an account?{" "}
-          <Link className="text-blue-500" to="/">
+          <Link className="text-blue-500" to="/login">
             Login
           </Link>
         </p>
