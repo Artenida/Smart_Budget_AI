@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { ExpenseUpdate } from "../types/expenses";
+import { formatDate } from "../utils/date";
 
 const api = axios.create({
   baseURL: "http://localhost:8000",
@@ -16,7 +17,13 @@ export const getExpenses = async (token: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+
+    const formattedData = response.data.map((expense: any) => ({
+      ...expense,
+      date: formatDate(expense.date),
+    }));
+
+    return formattedData;
   } catch (error: any) {
     console.error("Error fetching expenses: ", error.response || error.message);
     throw error;
