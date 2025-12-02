@@ -3,7 +3,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import ExpensesList from "../components/Expenses/ExpensesList";
 import type { ExpenseUpdate, Expense } from "../types/expenses";
 import ExpenseDialog from "../components/Expenses/ExpenseDialog";
-import { createExpense, getExpenses } from "../api/expenses";
+import { createExpense, getExpenses, updateExpense } from "../api/expenses";
 
 export default function Expenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -44,9 +44,20 @@ export default function Expenses() {
     }
   };
 
-  const handleEdit = (updated: ExpenseUpdate) => {
-    console.log("Edit expense!");
-    console.log(updated);
+  const handleEdit = async (updated: ExpenseUpdate) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if(!token) return
+
+      await updateExpense(token, updated.id, updated);
+
+      const refreshed = await getExpenses(token);
+      setExpenses(refreshed);
+
+      setDialogOpen(false);
+    } catch(error) {
+      console.error("Failed to update: ", error)
+    }
   };
 
   const handleDelete = (id: number) => {

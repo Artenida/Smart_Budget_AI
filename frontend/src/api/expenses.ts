@@ -1,4 +1,5 @@
 import axios from "axios";
+import type { ExpenseUpdate } from "../types/expenses";
 
 const api = axios.create({
   baseURL: "http://localhost:8000",
@@ -29,4 +30,23 @@ export const createExpense = async (token: string, data: any) => {
     },
   });
   return response.data;
+};
+
+export const updateExpense = async (
+  token: string,
+  id: number,
+  data: ExpenseUpdate
+) => {
+  try {
+    const response = await api.put(`/expenses/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data;
+  } catch (error: any) {
+    console.error("Error updating expense: ", error.response || error.message);
+    throw error;
+  }
 };
