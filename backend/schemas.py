@@ -13,6 +13,11 @@ class ExpenseCreate(ExpenseBase):
     description: str
     amount: float
 
+class ExpenseUpdate(BaseModel):
+    description: str
+    amount: float
+    category: Optional[str] = None
+
 # What we return to frontend
 class ExpenseResponse(ExpenseBase):
     id: int

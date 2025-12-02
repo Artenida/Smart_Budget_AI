@@ -6,8 +6,9 @@ export interface Expense {
   amount: string;
 }
 
-export interface CreateExpense {
+export interface ExpenseUpdate {
   id: number;
   description: string;
   amount: string;
+  category: string;
 }

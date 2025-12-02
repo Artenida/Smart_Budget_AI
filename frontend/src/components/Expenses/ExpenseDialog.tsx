@@ -8,15 +8,27 @@ import {
   Grid,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import type { Expense, CreateExpense } from "../../types/expenses";
+import type { Expense, ExpenseUpdate } from "../../types/expenses";
 
 interface Props {
   open: boolean;
   onClose: () => void;
   editingExpense: Expense | null;
-  onAdd: (data: Omit<CreateExpense, "id">) => void;
-  onEdit: (data: CreateExpense) => void;
+  onAdd: (data: Omit<ExpenseUpdate, "id">) => void;
+  onEdit: (data: ExpenseUpdate) => void;
 }
+
+const categories = [
+  "Food",
+  "Transport",
+  "Entertainment",
+  "Shopping",
+  "Bills",
+  "Healthcare",
+  "Education",
+  "Travel",
+  "Other",
+];
 
 const ExpenseDialog = ({
   open,
@@ -25,9 +37,10 @@ const ExpenseDialog = ({
   onAdd,
   onEdit,
 }: Props) => {
-  const [form, setForm] = useState<Omit<CreateExpense, "id">>({
+  const [form, setForm] = useState<Omit<ExpenseUpdate, "id">>({
     description: "",
     amount: "",
+    category: "",
   });
 
   useEffect(() => {
@@ -35,7 +48,7 @@ const ExpenseDialog = ({
       const { id, ...rest } = editingExpense;
       setForm(rest);
     } else {
-      setForm({ description: "", amount: "" });
+      setForm({ description: "", amount: "", category: "" });
     }
   }, [editingExpense]);
 
@@ -63,6 +76,25 @@ const ExpenseDialog = ({
 
       <DialogContent>
         <Grid container spacing={2} mt={1}>
+          {editingExpense && (<Grid>
+            <TextField
+              fullWidth
+              label="Category"
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              SelectProps={{ native: true }}
+            >
+              <option value=""></option>
+              <option>
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </option>
+            </TextField>
+          </Grid>)}
           <Grid>
             <TextField
               fullWidth

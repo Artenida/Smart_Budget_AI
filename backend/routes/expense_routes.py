@@ -5,7 +5,7 @@ from datetime import datetime
 
 from backend import models
 from backend.models import Expense
-from backend.schemas import ExpenseCreate, ExpenseResponse
+from backend.schemas import ExpenseCreate, ExpenseUpdate, ExpenseResponse
 from backend.utils import auth
 from backend import ai_model
 
@@ -62,17 +62,20 @@ def get_expense(expense_id: int, db: Session = Depends(auth.get_db), current_use
 
 # Update an expense
 @router.put("/{expense_id}", response_model=ExpenseResponse)
-def update_expense(expense_id: int, updated_expense: ExpenseCreate, db: Session = Depends(auth.get_db), current_user: models.User = Depends(auth.get_current_user)):
+def update_expense(expense_id: int, updated_expense: ExpenseUpdate, db: Session = Depends(auth.get_db), current_user: models.User = Depends(auth.get_current_user)):
     expense = db.query(Expense).filter(Expense.id == expense_id, Expense.user_id == current_user.id).first()
     if not expense:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found!")
     
-    if updated_expense.description != expense.description:
-        expense.category = ai_model.predict_category(updated_expense.description)
-
     expense.description = updated_expense.description
     expense.amount = updated_expense.amount
-    #expense.category = updated_expense.category if updated_expense.category else expense.category
+
+    if updated_expense.category:
+        expense.category = update_expense.category
+    
+    elif updated_expense.description != expense.description:
+        expense.category = ai_model.predict_category(update_expense.description)
+
     db.commit()
     db.refresh(expense)
     return expense
