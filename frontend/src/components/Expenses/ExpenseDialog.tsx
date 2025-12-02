@@ -44,13 +44,15 @@ const ExpenseDialog = ({
   });
 
   useEffect(() => {
-    if (editingExpense) {
-      const { id, ...rest } = editingExpense;
-      setForm(rest);
-    } else {
-      setForm({ description: "", amount: "", category: "" });
+    if(open) {
+      if (editingExpense) {
+        const { id, ...rest } = editingExpense;
+        setForm({...rest});
+      } else {
+        setForm({ description: "", amount: "", category: "" });
+      }
     }
-  }, [editingExpense]);
+  }, [open, editingExpense]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({
