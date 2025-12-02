@@ -67,14 +67,16 @@ def update_expense(expense_id: int, updated_expense: ExpenseUpdate, db: Session 
     if not expense:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Expense not found!")
     
+    description_changed = updated_expense.description != expense.description
+
     expense.description = updated_expense.description
     expense.amount = updated_expense.amount
 
-    if updated_expense.category:
-        expense.category = update_expense.category
+    if updated_expense.category is not None and updated_expense.category != expense.category:
+        expense.category = updated_expense.category
     
-    elif updated_expense.description != expense.description:
-        expense.category = ai_model.predict_category(update_expense.description)
+    elif description_changed:
+        expense.category = ai_model.predict_category(updated_expense.description)
 
     db.commit()
     db.refresh(expense)
