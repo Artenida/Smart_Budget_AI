@@ -6,6 +6,7 @@ import {
   TextField,
   Button,
   Grid,
+  MenuItem,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import type { Expense, ExpenseUpdate } from "../../types/expenses";
@@ -24,8 +25,7 @@ const categories = [
   "Entertainment",
   "Shopping",
   "Bills",
-  "Healthcare",
-  "Education",
+  "Health",
   "Travel",
   "Other",
 ];
@@ -44,10 +44,10 @@ const ExpenseDialog = ({
   });
 
   useEffect(() => {
-    if(open) {
+    if (open) {
       if (editingExpense) {
         const { id, ...rest } = editingExpense;
-        setForm({...rest});
+        setForm({ ...rest });
       } else {
         setForm({ description: "", amount: "", category: "" });
       }
@@ -78,25 +78,24 @@ const ExpenseDialog = ({
 
       <DialogContent>
         <Grid container spacing={2} mt={1}>
-          {editingExpense && (<Grid>
-            <TextField
-              fullWidth
-              label="Category"
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              SelectProps={{ native: true }}
-            >
-              <option value=""></option>
-              <option>
+          {editingExpense && (
+            <Grid>
+              <TextField
+                sx={{width: 210}}
+                select
+                label="Category"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+              >
                 {categories.map((cat) => (
-                  <option key={cat} value={cat}>
+                  <MenuItem key={cat} value={cat}>
                     {cat}
-                  </option>
+                  </MenuItem>
                 ))}
-              </option>
-            </TextField>
-          </Grid>)}
+              </TextField>
+            </Grid>
+          )}
           <Grid>
             <TextField
               fullWidth
