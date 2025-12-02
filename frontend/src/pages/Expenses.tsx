@@ -1,36 +1,38 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
 import ExpensesList from "../components/Expenses/ExpensesList";
-import type { CreateExpense, Expense } from "../types/expenses";
+import type { ExpenseUpdate, Expense } from "../types/expenses";
 import ExpenseDialog from "../components/Expenses/ExpenseDialog";
+import { getExpenses } from "../api/expenses";
 
 export default function Expenses() {
-  const [expenses, setExpenses] = useState<Expense[]>([
-    {
-      id: 1,
-      date: "2025-11-19",
-      category: "Food",
-      description: "Lunch",
-      amount: "$12",
-    },
-    {
-      id: 2,
-      date: "2025-11-18",
-      category: "Transport",
-      description: "Taxi",
-      amount: "$20",
-    },
-  ]);
-
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
-  const handleAdd = (data: Omit<CreateExpense, "id">) => {
+  //Fetch expenses from backend
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token) return;
+
+    const fetchExpenses = async () => {
+      try {
+        const data = await getExpenses(token);
+        setExpenses(data);
+      } catch(error) {
+        console.error("Failed to fetch expenses: ", error)
+      }
+    };
+
+    fetchExpenses();
+  }, []);
+  
+  const handleAdd = (data: Omit<ExpenseUpdate, "id">) => {
     console.log("Add expense!");
     console.log(data);
   };
 
-  const handleEdit = (updated: CreateExpense) => {
+  const handleEdit = (updated: ExpenseUpdate) => {
     console.log("Edit expense!");
     console.log(updated);
   };
