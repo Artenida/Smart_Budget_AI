@@ -3,7 +3,7 @@ import { Button, Grid, Typography } from "@mui/material";
 import ExpensesList from "../components/Expenses/ExpensesList";
 import type { ExpenseUpdate, Expense } from "../types/expenses";
 import ExpenseDialog from "../components/Expenses/ExpenseDialog";
-import { getExpenses } from "../api/expenses";
+import { createExpense, getExpenses } from "../api/expenses";
 
 export default function Expenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -12,7 +12,8 @@ export default function Expenses() {
 
   //Fetch expenses from backend
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
+
     if(!token) return;
 
     const fetchExpenses = async () => {
@@ -26,10 +27,21 @@ export default function Expenses() {
 
     fetchExpenses();
   }, []);
-  
-  const handleAdd = (data: Omit<ExpenseUpdate, "id">) => {
-    console.log("Add expense!");
-    console.log(data);
+
+  const handleAdd = async(data: Omit<ExpenseUpdate, "id">) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      await createExpense(token, data);
+
+      const updatedList = await getExpenses(token);
+      setExpenses(updatedList);
+
+      setDialogOpen(false)
+    } catch(error) {
+      console.error("Failed to create expense: ", error)
+    }
   };
 
   const handleEdit = (updated: ExpenseUpdate) => {
