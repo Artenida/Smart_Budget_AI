@@ -5,3 +5,9 @@ export interface Expense {
   description: string;
   amount: string;
 }
+
+export interface CreateExpense {
+  id: number;
+  description: string;
+  amount: string;
+}

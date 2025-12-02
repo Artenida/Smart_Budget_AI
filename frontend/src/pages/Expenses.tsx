@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
 import ExpensesList from "../components/Expenses/ExpensesList";
-import type { Expense } from "../types/expenses";
+import type { CreateExpense, Expense } from "../types/expenses";
+import ExpenseDialog from "../components/Expenses/ExpenseDialog";
 
 export default function Expenses() {
   const [expenses, setExpenses] = useState<Expense[]>([
@@ -24,16 +25,19 @@ export default function Expenses() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
-  const handleAdd = (data: Omit<Expense, "id">) => {
+  const handleAdd = (data: Omit<CreateExpense, "id">) => {
     console.log("Add expense!");
+    console.log(data);
   };
 
-  const handleEdit = (updated: Expense) => {
+  const handleEdit = (updated: CreateExpense) => {
     console.log("Edit expense!");
+    console.log(updated);
   };
 
   const handleDelete = (id: number) => {
     console.log("Delete single expense!");
+    console.log(id);
   };
 
   const handleDeleteAll = () => {
@@ -47,6 +51,7 @@ export default function Expenses() {
 
   const openEditDialog = (expense: Expense) => {
     setEditingExpense(expense);
+    console.log(expense);
     setDialogOpen(true);
   };
 
@@ -56,7 +61,10 @@ export default function Expenses() {
         <Typography variant="h4" fontWeight="bold">
           Expenses List
         </Typography>
-        <Button variant="contained">Add Expense</Button>
+
+        <Button variant="contained" onClick={openAddDialog}>
+          Add Expense
+        </Button>
       </Grid>
 
       <ExpensesList
@@ -64,6 +72,14 @@ export default function Expenses() {
         onEdit={openEditDialog}
         onDelete={handleDelete}
         onDeleteAll={handleDeleteAll}
+      />
+
+      <ExpenseDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        editingExpense={editingExpense}
+        onAdd={handleAdd}
+        onEdit={handleEdit}
       />
     </div>
   );
