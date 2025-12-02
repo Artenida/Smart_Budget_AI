@@ -50,3 +50,18 @@ export const updateExpense = async (
     throw error;
   }
 };
+
+export const deleteExpense = async (token: string, id: number) => {
+  try {
+    await api.delete(`/expenses/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return;
+  } catch (error) {
+    console.error("Error deleting expense!");
+    throw error;
+  }
+};

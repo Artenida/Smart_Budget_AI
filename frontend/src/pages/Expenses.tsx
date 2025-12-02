@@ -3,7 +3,12 @@ import { Button, Grid, Typography } from "@mui/material";
 import ExpensesList from "../components/Expenses/ExpensesList";
 import type { ExpenseUpdate, Expense } from "../types/expenses";
 import ExpenseDialog from "../components/Expenses/ExpenseDialog";
-import { createExpense, getExpenses, updateExpense } from "../api/expenses";
+import {
+  createExpense,
+  deleteExpense,
+  getExpenses,
+  updateExpense,
+} from "../api/expenses";
 
 export default function Expenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -14,21 +19,21 @@ export default function Expenses() {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
-    if(!token) return;
+    if (!token) return;
 
     const fetchExpenses = async () => {
       try {
         const data = await getExpenses(token);
         setExpenses(data);
-      } catch(error) {
-        console.error("Failed to fetch expenses: ", error)
+      } catch (error) {
+        console.error("Failed to fetch expenses: ", error);
       }
     };
 
     fetchExpenses();
   }, []);
 
-  const handleAdd = async(data: Omit<ExpenseUpdate, "id">) => {
+  const handleAdd = async (data: Omit<ExpenseUpdate, "id">) => {
     try {
       const token = localStorage.getItem("access_token");
       if (!token) return;
@@ -38,16 +43,16 @@ export default function Expenses() {
       const updatedList = await getExpenses(token);
       setExpenses(updatedList);
 
-      setDialogOpen(false)
-    } catch(error) {
-      console.error("Failed to create expense: ", error)
+      setDialogOpen(false);
+    } catch (error) {
+      console.error("Failed to create expense: ", error);
     }
   };
 
   const handleEdit = async (updated: ExpenseUpdate) => {
     try {
       const token = localStorage.getItem("access_token");
-      if(!token) return
+      if (!token) return;
 
       await updateExpense(token, updated.id, updated);
 
@@ -55,14 +60,23 @@ export default function Expenses() {
       setExpenses(refreshed);
 
       setDialogOpen(false);
-    } catch(error) {
-      console.error("Failed to update: ", error)
+    } catch (error) {
+      console.error("Failed to update: ", error);
     }
   };
 
-  const handleDelete = (id: number) => {
-    console.log("Delete single expense!");
-    console.log(id);
+  const handleDelete = async (id: number) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) return;
+
+      await deleteExpense(token, id);
+
+      const refreshed = await getExpenses(token);
+      setExpenses(refreshed);
+    } catch (error) {
+      console.error("Failed deleting expense!");
+    }
   };
 
   const handleDeleteAll = () => {
@@ -76,7 +90,6 @@ export default function Expenses() {
 
   const openEditDialog = (expense: Expense) => {
     setEditingExpense(expense);
-    console.log(expense);
     setDialogOpen(true);
   };
 
